@@ -23,7 +23,7 @@ export default function Register() {
             {/* Right Side Form */}
             <div className="flex w-full flex-col justify-center px-6 lg:w-[calc(100%-9rem)] lg:px-24 xl:px-48">
                 <div className="mx-auto w-full max-w-md">
-                    <div className="mb-8">
+                    <div className="mb-8 flex flex-col items-center text-center">
                         {/* Logo placeholder */}
                         <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-[#ff4500]">
                             <svg
