@@ -68,7 +68,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
                                 <label htmlFor="search" className="sr-only">
                                     Search
                                 </label>
-                                <div className="relative">
+                                <form
+                                    action="/search"
+                                    method="get"
+                                    className="relative"
+                                >
                                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                         <svg
                                             className="h-5 w-5 text-gray-400"
@@ -86,12 +90,19 @@ export default function AppLayout({ children }: AppLayoutProps) {
                                     </div>
                                     <input
                                         id="search"
-                                        name="search"
+                                        name="q"
                                         className="block w-full rounded-full border border-gray-300 bg-gray-50 py-2 pr-3 pl-10 leading-5 placeholder-gray-500 focus:border-orange-500 focus:placeholder-gray-400 focus:ring-1 focus:ring-orange-500 focus:outline-none sm:text-sm"
                                         placeholder="Search Cortisol..."
                                         type="search"
+                                        defaultValue={
+                                            new URLSearchParams(
+                                                typeof window !== 'undefined'
+                                                    ? window.location.search
+                                                    : '',
+                                            ).get('q') || ''
+                                        }
                                     />
-                                </div>
+                                </form>
                             </div>
                         </div>
 
