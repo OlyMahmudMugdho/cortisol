@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/home/mugdho/.config/herd-lite/bin/php",
+            "args": [
+                "/home/mugdho/data/codes/php-codes/cortisol/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
