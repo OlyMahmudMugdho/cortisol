@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Models\Group;
 use App\Models\GroupType;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
