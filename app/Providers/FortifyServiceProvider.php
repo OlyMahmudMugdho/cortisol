@@ -39,9 +39,12 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
         Fortify::authenticateUsing(function (Request $request) {
-            $user = User::where('email', $request->login)
-                ->orWhere('username', $request->login)
-                ->first();
+            $login = strtolower($request->login);
+
+            $user = User::where(function ($query) use ($login) {
+                $query->whereRaw('lower(email) = ?', [$login])
+                    ->orWhereRaw('lower(username) = ?', [$login]);
+            })->first();
 
             if ($user && Hash::check($request->password, $user->password)) {
                 return $user;
