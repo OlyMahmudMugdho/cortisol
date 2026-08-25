@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Group;
 use App\Models\GroupType;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,6 +25,8 @@ class GroupController extends Controller
             'group_type_id' => ['required', 'exists:group_types,id'],
         ]);
 
+        $validated['creator_id'] = $request->user()->id;
+
         $group = Group::create($validated);
 
         // Optionally, add the creator as a member/admin of the group here:
@@ -35,14 +36,35 @@ class GroupController extends Controller
             ->with('success', 'Group created successfully.');
     }
 
-    public function show($code)
+    public function show(Request $request, $code)
     {
         $group = Group::where('code', $code)->firstOrFail();
         
-        // We will build the Groups/Show component later. 
-        // For now, let's just return a placeholder or pass it to Inertia.
+        $isJoined = false;
+        if ($request->user()) {
+            $isJoined = $group->users()->where('user_id', $request->user()->id)->exists();
+        }
+
         return Inertia::render('Groups/Show', [
             'group' => $group,
+            'isJoined' => $isJoined,
         ]);
+    }
+
+    public function toggleMembership(Request $request, Group $group)
+    {
+        $user = $request->user();
+
+        if ($group->users()->where('user_id', $user->id)->exists()) {
+            // Cannot leave if you are the creator (optional logic, but standard for now)
+            if ($group->creator_id === $user->id) {
+                return back()->with('error', 'You cannot leave a community you created.');
+            }
+            $group->users()->detach($user->id);
+            return back()->with('success', 'You have left the community.');
+        } else {
+            $group->users()->attach($user->id);
+            return back()->with('success', 'You have joined the community.');
+        }
     }
 }
