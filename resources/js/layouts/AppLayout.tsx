@@ -188,12 +188,20 @@ export default function AppLayout({ children }: AppLayoutProps) {
                             vote, and discuss.
                         </p>
                         {user && (
-                            <Link
-                                href="/posts/create"
-                                className="block w-full rounded-full bg-orange-600 px-4 py-2 text-center font-bold text-white hover:bg-orange-700"
-                            >
-                                Create Post
-                            </Link>
+                            <div className="space-y-2">
+                                <Link
+                                    href="/posts/create"
+                                    className="block w-full rounded-full bg-orange-600 px-4 py-2 text-center font-bold text-white hover:bg-orange-700"
+                                >
+                                    Create Post
+                                </Link>
+                                <Link
+                                    href="/groups/create"
+                                    className="block w-full rounded-full border border-orange-600 px-4 py-2 text-center font-bold text-orange-600 hover:bg-orange-50"
+                                >
+                                    Create Community
+                                </Link>
+                            </div>
                         )}
                         {!user && (
                             <Link
