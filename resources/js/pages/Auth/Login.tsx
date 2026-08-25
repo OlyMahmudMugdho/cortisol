@@ -3,7 +3,7 @@ import { FormEventHandler } from 'react';
 
 export default function Login() {
     const { data, setData, post, processing, errors } = useForm({
-        username: '',
+        login: '',
         password: '',
         remember: false,
     });
@@ -44,20 +44,20 @@ export default function Login() {
                     <form onSubmit={submit} className="space-y-4">
                         <div>
                             <input
-                                id="username"
+                                id="login"
                                 type="text"
-                                name="username"
-                                value={data.username}
-                                placeholder="Username"
+                                name="login"
+                                value={data.login}
+                                placeholder="Email or Username"
                                 className="block w-full rounded border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-black placeholder-gray-500 transition-colors hover:bg-white focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                 autoComplete="username"
                                 onChange={(e) =>
-                                    setData('username', e.target.value)
+                                    setData('login', e.target.value)
                                 }
                             />
-                            {errors.username && (
+                            {errors.login && (
                                 <div className="mt-1 text-xs text-red-500">
-                                    {errors.username}
+                                    {errors.login}
                                 </div>
                             )}
                         </div>
