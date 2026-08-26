@@ -1,7 +1,8 @@
 import { useForm, Link } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import AuthInput from '../../components/AuthInput';
 
-export default function Login() {
+export default function Login({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm({
         login: '',
         password: '',
@@ -35,6 +36,13 @@ export default function Login() {
                         <h1 className="text-xl font-medium text-black">
                             Log in
                         </h1>
+
+                        {status && (
+                            <div className="mb-4 rounded-md bg-green-50 p-4 text-sm font-medium text-green-600">
+                                {status}
+                            </div>
+                        )}
+
                         <p className="mt-2 text-sm text-gray-500">
                             By continuing, you agree to our User Agreement and
                             Privacy Policy.
@@ -87,6 +95,14 @@ export default function Login() {
                                 className="font-bold text-blue-500 hover:underline"
                             >
                                 Sign Up
+                            </Link>
+                        </div>
+                        <div className="mt-2 text-center text-sm">
+                            <Link
+                                href="/forgot-password"
+                                className="font-medium text-orange-600 hover:text-orange-500"
+                            >
+                                Forgot Password?
                             </Link>
                         </div>
                     </form>

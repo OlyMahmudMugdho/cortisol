@@ -52,7 +52,7 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::loginView(function () {
-            return Inertia::render('Auth/Login');
+            return Inertia::render('Auth/Login', ['status' => session('status')]);
         });
 
         Fortify::registerView(function () {

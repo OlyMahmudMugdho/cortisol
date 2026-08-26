@@ -36,3 +36,15 @@ Route::middleware('auth')->group(function () {
 Route::get('/g/{code}', [GroupController::class, 'show'])->name('groups.show');
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/u/{username}', [UserController::class, 'show'])->name('users.show');
+
+use App\Http\Controllers\OtpPasswordResetController;
+use Inertia\Inertia;
+
+Route::middleware('guest')->group(function () {
+    Route::get('/forgot-password', function () {
+        return Inertia::render('Auth/ForgotPassword', ['status' => session('status')]);
+    })->name('password.request');
+
+    Route::post('/forgot-password-otp', [OtpPasswordResetController::class, 'sendOtp'])->name('password.email.otp');
+    Route::post('/reset-password-otp', [OtpPasswordResetController::class, 'resetPassword'])->name('password.update.otp');
+});
