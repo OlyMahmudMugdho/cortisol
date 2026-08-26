@@ -12,6 +12,7 @@ class CommentController extends Controller
     {
         $validated = $request->validate([
             'content' => ['required', 'string', 'max:1000'],
+            'parent_id' => ['nullable', 'exists:comments,id'],
         ]);
 
         $validated['user_id'] = $request->user()->id;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import AppLayout from '../../layouts/AppLayout';
 import CommentItem, { Comment } from '../../components/CommentItem';
 import { Link, useForm, usePage, router } from '@inertiajs/react';
@@ -310,7 +310,7 @@ export default function ShowPost({ post }: Props) {
                     )}
 
                     <div className="space-y-6">
-                        {post.comments && post.comments.length > 0 ? (
+                        {commentsTree.length > 0 ? (
                             post.comments.map((comment) => (
                                 <CommentItem
                                     key={comment.id}
@@ -379,3 +379,26 @@ export default function ShowPost({ post }: Props) {
         </AppLayout>
     );
 }
+const commentsTree = useMemo(() => {
+    if (!post.comments) return [];
+    const commentMap: Record<number, Comment> = {};
+    const roots: Comment[] = [];
+
+    // Initialize map
+    post.comments.forEach((c) => {
+        commentMap[c.id] = { ...c, replies: [] };
+    });
+
+    // Build tree
+    post.comments.forEach((c) => {
+        if (c.parent_id) {
+            if (commentMap[c.parent_id]) {
+                commentMap[c.parent_id].replies!.push(commentMap[c.id]);
+            }
+        } else {
+            roots.push(commentMap[c.id]);
+        }
+    });
+
+    return roots;
+}, [post.comments]);

@@ -41,7 +41,7 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::with(['user', 'group', 'userVote', 'comments' => function ($q) {
-            $q->with(['user', 'userVote'])->withSum('votes', 'value')->latest();
+            $q->with(['user', 'userVote'])->withSum('votes', 'value')->oldest();
         }])
             ->withCount(['comments'])
             ->withSum('votes', 'value')
