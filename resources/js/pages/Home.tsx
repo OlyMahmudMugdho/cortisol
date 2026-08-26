@@ -33,9 +33,10 @@ interface PaginationData {
 
 interface HomeProps {
     posts: PaginationData;
+    currentFeed: string;
 }
 
-export default function Home({ posts }: HomeProps) {
+export default function Home({ posts, currentFeed }: HomeProps) {
     const { auth } = usePage<any>().props;
 
     const handleVote = (postId: number, value: number) => {
@@ -52,10 +53,37 @@ export default function Home({ posts }: HomeProps) {
 
     return (
         <AppLayout>
+            <div className="mb-6 flex items-center space-x-4">
+                {auth?.user && (
+                    <Link
+                        href="/?feed=home"
+                        className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                            currentFeed === 'home'
+                                ? 'bg-gray-200 text-gray-900'
+                                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+                        }`}
+                    >
+                        Home
+                    </Link>
+                )}
+                <Link
+                    href="/?feed=all"
+                    className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                        currentFeed === 'all'
+                            ? 'bg-gray-200 text-gray-900'
+                            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                >
+                    All Posts
+                </Link>
+            </div>
+
             <div className="space-y-4">
                 {posts.data.length === 0 ? (
                     <div className="rounded-md bg-white p-6 text-center text-gray-500 shadow">
-                        No posts yet. Be the first to post!
+                        {currentFeed === 'home'
+                            ? "You haven't joined any communities with posts yet. Join some to populate your feed, or check out 'All Posts'."
+                            : 'No posts yet. Be the first to post!'}
                     </div>
                 ) : (
                     posts.data.map((post) => (
