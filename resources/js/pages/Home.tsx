@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import React from 'react';
 import AppLayout from '../layouts/AppLayout';
 
@@ -17,7 +17,10 @@ interface Post {
         code: string;
     };
     comments_count: number;
-    votes_count: number;
+    votes_sum_value: number | null;
+    user_vote: {
+        value: number;
+    } | null;
 }
 
 interface PaginationData {
@@ -33,6 +36,20 @@ interface HomeProps {
 }
 
 export default function Home({ posts }: HomeProps) {
+    const { auth } = usePage<any>().props;
+
+    const handleVote = (postId: number, value: number) => {
+        if (!auth?.user) {
+            window.location.href = '/login';
+            return;
+        }
+        router.post(
+            `/posts/${postId}/vote`,
+            { value },
+            { preserveScroll: true },
+        );
+    };
+
     return (
         <AppLayout>
             <div className="space-y-4">
@@ -48,7 +65,10 @@ export default function Home({ posts }: HomeProps) {
                         >
                             {/* Upvote sidebar */}
                             <div className="flex w-10 flex-col items-center border-r border-gray-100 bg-gray-50 pt-2">
-                                <button className="text-gray-400 hover:text-orange-500">
+                                <button
+                                    onClick={() => handleVote(post.id, 1)}
+                                    className={`hover:text-orange-500 ${post.user_vote?.value === 1 ? 'text-orange-500' : 'text-gray-400'}`}
+                                >
                                     <svg
                                         className="h-5 w-5"
                                         fill="none"
@@ -63,10 +83,21 @@ export default function Home({ posts }: HomeProps) {
                                         />
                                     </svg>
                                 </button>
-                                <span className="my-1 text-sm font-bold text-gray-800">
-                                    {post.votes_count || 0}
+                                <span
+                                    className={`my-1 text-sm font-bold ${
+                                        post.user_vote?.value === 1
+                                            ? 'text-orange-500'
+                                            : post.user_vote?.value === -1
+                                              ? 'text-indigo-500'
+                                              : 'text-gray-800'
+                                    }`}
+                                >
+                                    {post.votes_sum_value || 0}
                                 </span>
-                                <button className="text-gray-400 hover:text-blue-500">
+                                <button
+                                    onClick={() => handleVote(post.id, -1)}
+                                    className={`hover:text-indigo-500 ${post.user_vote?.value === -1 ? 'text-indigo-500' : 'text-gray-400'}`}
+                                >
                                     <svg
                                         className="h-5 w-5"
                                         fill="none"

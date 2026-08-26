@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -63,5 +64,13 @@ class Comment extends Model
     public function votes(): HasMany
     {
         return $this->hasMany(CommentVote::class);
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function userVote()
+    {
+        return $this->hasOne(CommentVote::class)->where('user_id', auth()->id());
     }
 }

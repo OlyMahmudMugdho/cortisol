@@ -40,10 +40,11 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::with(['user', 'group', 'comments' => function ($q) {
-            $q->with('user')->latest();
+        $post = Post::with(['user', 'group', 'userVote', 'comments' => function ($q) {
+            $q->with(['user', 'userVote'])->withSum('votes', 'value')->latest();
         }])
-            ->withCount(['comments', 'votes'])
+            ->withCount(['comments'])
+            ->withSum('votes', 'value')
             ->findOrFail($id);
 
         return Inertia::render('Posts/Show', [

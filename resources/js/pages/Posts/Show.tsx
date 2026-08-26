@@ -1,6 +1,6 @@
 import React from 'react';
 import AppLayout from '../../layouts/AppLayout';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage, router } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -32,7 +32,10 @@ interface Post {
     user: User;
     group: Group;
     comments_count: number;
-    votes_count: number;
+    votes_sum_value: number | null;
+    user_vote: {
+        value: number;
+    } | null;
     comments: Comment[];
 }
 
@@ -42,6 +45,19 @@ interface Props {
 
 export default function ShowPost({ post }: Props) {
     const { auth } = usePage<any>().props;
+
+    const handleVote = (value: number) => {
+        if (!auth?.user) {
+            window.location.href = '/login';
+            return;
+        }
+        router.post(
+            `/posts/${post.id}/vote`,
+            { value },
+            { preserveScroll: true },
+        );
+    };
+
     const {
         data,
         setData,
@@ -96,7 +112,10 @@ export default function ShowPost({ post }: Props) {
 
                     <div className="mt-6 flex items-center space-x-4 text-sm font-bold text-gray-500">
                         <div className="flex items-center space-x-1 rounded-full bg-gray-100 px-2 py-1">
-                            <button className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-orange-500">
+                            <button
+                                onClick={() => handleVote(1)}
+                                className={`rounded p-1 hover:bg-gray-200 hover:text-orange-500 ${post.user_vote?.value === 1 ? 'text-orange-500' : 'text-gray-400'}`}
+                            >
                                 <svg
                                     className="h-5 w-5"
                                     fill="none"
@@ -111,10 +130,21 @@ export default function ShowPost({ post }: Props) {
                                     />
                                 </svg>
                             </button>
-                            <span className="text-gray-900">
-                                {post.votes_count || 0}
+                            <span
+                                className={`text-gray-900 ${
+                                    post.user_vote?.value === 1
+                                        ? 'text-orange-500'
+                                        : post.user_vote?.value === -1
+                                          ? 'text-indigo-500'
+                                          : ''
+                                }`}
+                            >
+                                {post.votes_sum_value || 0}
                             </span>
-                            <button className="rounded p-1 text-gray-400 hover:bg-gray-200 hover:text-indigo-500">
+                            <button
+                                onClick={() => handleVote(-1)}
+                                className={`rounded p-1 hover:bg-gray-200 hover:text-indigo-500 ${post.user_vote?.value === -1 ? 'text-indigo-500' : 'text-gray-400'}`}
+                            >
                                 <svg
                                     className="h-5 w-5"
                                     fill="none"

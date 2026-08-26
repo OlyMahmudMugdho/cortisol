@@ -10,8 +10,9 @@ class HomeController extends Controller
 {
     public function index(): Response
     {
-        $posts = Post::with(['user', 'group'])
-            ->withCount(['comments', 'votes']) // If we want to show comment count and upvotes
+        $posts = Post::with(['user', 'group', 'userVote'])
+            ->withCount(['comments'])
+            ->withSum('votes', 'value')
             ->latest()
             ->paginate(15);
 

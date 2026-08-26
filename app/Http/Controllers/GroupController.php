@@ -45,9 +45,16 @@ class GroupController extends Controller
             $isJoined = $group->users()->where('user_id', $request->user()->id)->exists();
         }
 
+        $posts = $group->posts()->with(['user', 'group', 'userVote'])
+            ->withCount(['comments'])
+            ->withSum('votes', 'value')
+            ->latest()
+            ->paginate(15);
+
         return Inertia::render('Groups/Show', [
             'group' => $group,
             'isJoined' => $isJoined,
+            'posts' => $posts,
         ]);
     }
 
