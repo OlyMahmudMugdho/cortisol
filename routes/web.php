@@ -27,3 +27,4 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/g/{code}', [GroupController::class, 'show'])->name('groups.show');
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/u/{username}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
