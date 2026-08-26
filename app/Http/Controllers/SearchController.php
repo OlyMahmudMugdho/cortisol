@@ -14,8 +14,9 @@ class SearchController extends Controller
 
         $groups = [];
         if (! empty($query)) {
-            $groups = Group::where('name', 'like', "%{$query}%")
-                ->orWhere('code', 'like', "%{$query}%")
+            $searchTerm = '%'.strtolower($query).'%';
+            $groups = Group::whereRaw('lower(name) like ?', [$searchTerm])
+                ->orWhereRaw('lower(code) like ?', [$searchTerm])
                 ->withCount('users')
                 ->limit(20)
                 ->get();

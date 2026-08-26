@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: cortisol
+    ports:
+      - "5432:5432"
+    command: postgres -c shared_buffers=16MB -c work_mem=1MB
+    networks:
+      - database
+
+networks:
+  database:
+    driver: bridge
