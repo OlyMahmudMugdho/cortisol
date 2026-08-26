@@ -100,101 +100,24 @@ export default function ShowPost({ post }: Props) {
             <div className="rounded-md bg-white shadow">
                 {/* Post Header */}
                 <div className="border-b border-gray-100 p-4 sm:p-6">
-                    <div className="mb-2 flex items-center text-xs text-gray-500">
-                        <Link
-                            href={`/g/${post.group.code}`}
-                            className="mr-1 font-bold text-gray-900 hover:underline"
-                        >
-                            g/{post.group.code}
-                        </Link>
-                        <span>•</span>
-                        <span className="mx-1">Posted by</span>
-                        <Link
-                            href={`/u/${post.user.username}`}
-                            className="mr-1 hover:underline"
-                        >
-                            u/{post.user.username}
-                        </Link>
-                        <span>{dayjs(post.created_at).fromNow()}</span>
-                    </div>
-
-                    <h1 className="mb-4 text-2xl font-bold text-gray-900">
-                        {post.title}
-                    </h1>
-
-                    {post.content && (
-                        <div className="mt-4 break-words whitespace-pre-wrap text-gray-800">
-                            {post.content}
+                    <div className="mb-2 flex items-start justify-between">
+                        <div className="flex flex-wrap items-center text-xs text-gray-500">
+                            <Link
+                                href={`/g/${post.group.code}`}
+                                className="mr-1 font-bold text-gray-900 hover:underline"
+                            >
+                                g/{post.group.code}
+                            </Link>
+                            <span>•</span>
+                            <span className="mx-1">Posted by</span>
+                            <Link
+                                href={`/u/${post.user.username}`}
+                                className="mr-1 hover:underline"
+                            >
+                                u/{post.user.username}
+                            </Link>
+                            <span>{dayjs(post.created_at).fromNow()}</span>
                         </div>
-                    )}
-
-                    <div className="mt-6 flex items-center space-x-4 text-sm font-bold text-gray-500">
-                        <div className="flex items-center space-x-1 rounded-full bg-gray-100 px-2 py-1">
-                            <button
-                                onClick={() => handleVote(1)}
-                                className={`rounded p-1 hover:bg-gray-200 hover:text-orange-500 ${post.user_vote?.value === 1 ? 'text-orange-500' : 'text-gray-400'}`}
-                            >
-                                <svg
-                                    className="h-5 w-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M5 15l7-7 7 7"
-                                    />
-                                </svg>
-                            </button>
-                            <span
-                                className={`text-gray-900 ${
-                                    post.user_vote?.value === 1
-                                        ? 'text-orange-500'
-                                        : post.user_vote?.value === -1
-                                          ? 'text-indigo-500'
-                                          : ''
-                                }`}
-                            >
-                                {post.votes_sum_value || 0}
-                            </span>
-                            <button
-                                onClick={() => handleVote(-1)}
-                                className={`rounded p-1 hover:bg-gray-200 hover:text-indigo-500 ${post.user_vote?.value === -1 ? 'text-indigo-500' : 'text-gray-400'}`}
-                            >
-                                <svg
-                                    className="h-5 w-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M19 9l-7 7-7-7"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                        <div className="flex cursor-pointer items-center rounded p-2 hover:bg-gray-100">
-                            <svg
-                                className="mr-1.5 h-5 w-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                                />
-                            </svg>
-                            {post.comments_count} Comments
-                        </div>
-
                         {auth?.user?.id === post.user.id && (
                             <div className="relative ml-auto">
                                 <button
@@ -272,6 +195,81 @@ export default function ShowPost({ post }: Props) {
                                 )}
                             </div>
                         )}
+                    </div>
+                    <h1 className="mb-4 text-2xl font-bold text-gray-900">
+                        {post.title}
+                    </h1>
+                    {post.content && (
+                        <div className="mt-4 break-words whitespace-pre-wrap text-gray-800">
+                            {post.content}
+                        </div>
+                    )}
+                    <div className="mt-6 flex items-center space-x-4 text-sm font-bold text-gray-500">
+                        <div className="flex items-center space-x-1 rounded-full bg-gray-100 px-2 py-1">
+                            <button
+                                onClick={() => handleVote(1)}
+                                className={`rounded p-1 hover:bg-gray-200 hover:text-orange-500 ${post.user_vote?.value === 1 ? 'text-orange-500' : 'text-gray-400'}`}
+                            >
+                                <svg
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 15l7-7 7 7"
+                                    />
+                                </svg>
+                            </button>
+                            <span
+                                className={`text-gray-900 ${
+                                    post.user_vote?.value === 1
+                                        ? 'text-orange-500'
+                                        : post.user_vote?.value === -1
+                                          ? 'text-indigo-500'
+                                          : ''
+                                }`}
+                            >
+                                {post.votes_sum_value || 0}
+                            </span>
+                            <button
+                                onClick={() => handleVote(-1)}
+                                className={`rounded p-1 hover:bg-gray-200 hover:text-indigo-500 ${post.user_vote?.value === -1 ? 'text-indigo-500' : 'text-gray-400'}`}
+                            >
+                                <svg
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="flex cursor-pointer items-center rounded p-2 hover:bg-gray-100">
+                            <svg
+                                className="mr-1.5 h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                />
+                            </svg>
+                            {post.comments_count} Comments
+                        </div>
                     </div>
                 </div>
 
