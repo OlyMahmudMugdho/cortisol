@@ -7,14 +7,20 @@ interface Props {
 }
 
 export default function ForgotPassword({ status }: Props) {
-    const [step, setStep] = useState<1 | 2>(1);
+    const [step, setStep] = useState<1 | 2 | 3>(1);
 
     // Step 1: Request OTP
     const otpForm = useForm({
         email: '',
     });
 
-    // Step 2: Reset Password
+    // Step 2: Verify OTP
+    const verifyForm = useForm({
+        email: '',
+        otp: '',
+    });
+
+    // Step 3: Reset Password
     const resetForm = useForm({
         email: '',
         otp: '',
@@ -26,8 +32,23 @@ export default function ForgotPassword({ status }: Props) {
         e.preventDefault();
         otpForm.post('/forgot-password-otp', {
             onSuccess: () => {
-                resetForm.setData('email', otpForm.data.email);
+                verifyForm.setData('email', otpForm.data.email);
                 setStep(2);
+            },
+        });
+    };
+
+    const submitVerifyOtp: FormEventHandler = (e) => {
+        e.preventDefault();
+        verifyForm.post('/verify-otp', {
+            onSuccess: () => {
+                resetForm.setData({
+                    email: verifyForm.data.email,
+                    otp: verifyForm.data.otp,
+                    password: '',
+                    password_confirmation: '',
+                });
+                setStep(3);
             },
         });
     };
@@ -64,9 +85,12 @@ export default function ForgotPassword({ status }: Props) {
                             Reset your password
                         </h1>
                         <p className="mt-2 text-sm text-gray-500">
-                            {step === 1
-                                ? "Enter your email address and we'll send you a 6-digit OTP to reset your password."
-                                : 'Enter the 6-digit OTP sent to your email and choose a new password.'}
+                            {step === 1 &&
+                                "Enter your email address and we'll send you a 6-digit OTP to reset your password."}
+                            {step === 2 &&
+                                'Enter the 6-digit OTP sent to your email.'}
+                            {step === 3 &&
+                                'Choose a new password for your account.'}
                         </p>
                     </div>
 
@@ -76,7 +100,7 @@ export default function ForgotPassword({ status }: Props) {
                         </div>
                     )}
 
-                    {step === 1 ? (
+                    {step === 1 && (
                         <form onSubmit={submitOtpRequest} className="space-y-6">
                             <AuthInput
                                 id="email"
@@ -100,23 +124,37 @@ export default function ForgotPassword({ status }: Props) {
                                 Send OTP
                             </button>
                         </form>
-                    ) : (
-                        <form onSubmit={submitReset} className="space-y-4">
+                    )}
+
+                    {step === 2 && (
+                        <form onSubmit={submitVerifyOtp} className="space-y-4">
                             <AuthInput
                                 id="otp"
                                 type="text"
                                 name="otp"
-                                value={resetForm.data.otp}
+                                value={verifyForm.data.otp}
                                 placeholder="6-digit OTP"
                                 required
                                 maxLength={6}
                                 className="text-center text-lg tracking-widest"
                                 onChange={(e) =>
-                                    resetForm.setData('otp', e.target.value)
+                                    verifyForm.setData('otp', e.target.value)
                                 }
-                                error={resetForm.errors.otp}
+                                error={verifyForm.errors.otp}
                             />
 
+                            <button
+                                type="submit"
+                                disabled={verifyForm.processing}
+                                className="mt-6 flex w-full justify-center rounded-full bg-orange-600 px-4 py-3 text-sm font-bold text-white hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50"
+                            >
+                                Verify OTP
+                            </button>
+                        </form>
+                    )}
+
+                    {step === 3 && (
+                        <form onSubmit={submitReset} className="space-y-4">
                             <AuthInput
                                 id="password"
                                 type="password"

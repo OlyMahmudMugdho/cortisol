@@ -77,4 +77,36 @@ class OtpPasswordResetController extends Controller
 
         return redirect()->route('login')->with('status', 'Your password has been reset!');
     }
+
+    /**
+     * Verify the OTP without resetting the password.
+     */
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $record = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$record) {
+            return back()->withErrors(['otp' => 'Invalid or expired OTP.']);
+        }
+
+        // Check expiry (15 minutes)
+        if (Carbon::parse($record->created_at)->addMinutes(15)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return back()->withErrors(['otp' => 'OTP has expired.']);
+        }
+
+        // Check hash
+        if (!Hash::check($request->otp, $record->token)) {
+            return back()->withErrors(['otp' => 'Invalid OTP.']);
+        }
+
+        return back()->with('status', 'OTP verified successfully.');
+    }
 }
