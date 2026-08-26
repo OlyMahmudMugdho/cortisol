@@ -42,69 +42,33 @@ export default function Login() {
                     </div>
 
                     <form onSubmit={submit} className="space-y-4">
-                        <div>
-                            <input
-                                id="login"
-                                type="text"
-                                name="login"
-                                value={data.login}
-                                placeholder="Email or Username"
-                                className="block w-full rounded border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-black placeholder-gray-500 transition-colors hover:bg-white focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                autoComplete="username"
-                                onChange={(e) =>
-                                    setData('login', e.target.value)
-                                }
-                            />
-                            {errors.login && (
-                                <div className="mt-1 text-xs text-red-500">
-                                    {errors.login}
-                                </div>
-                            )}
-                        </div>
+                        <AuthInput
+                            id="login"
+                            type="text"
+                            name="login"
+                            value={data.login}
+                            placeholder="Username or Email"
+                            autoComplete="username"
+                            required
+                            onChange={(e) => setData('login', e.target.value)}
+                            error={
+                                errors.login || errors.email || errors.username
+                            }
+                        />
 
-                        <div>
-                            <input
-                                id="password"
-                                type="password"
-                                name="password"
-                                value={data.password}
-                                placeholder="Password"
-                                className="block w-full rounded border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-black placeholder-gray-500 transition-colors hover:bg-white focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none"
-                                autoComplete="current-password"
-                                onChange={(e) =>
-                                    setData('password', e.target.value)
-                                }
-                            />
-                            {errors.password && (
-                                <div className="mt-1 text-xs text-red-500">
-                                    {errors.password}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <label className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    name="remember"
-                                    checked={data.remember}
-                                    onChange={(e) =>
-                                        setData('remember', e.target.checked)
-                                    }
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                                <span className="ml-2 text-sm text-gray-700">
-                                    Remember me
-                                </span>
-                            </label>
-
-                            <a
-                                href="#"
-                                className="text-xs font-semibold text-blue-500 hover:underline"
-                            >
-                                Forgot password?
-                            </a>
-                        </div>
+                        <AuthInput
+                            id="password"
+                            type="password"
+                            name="password"
+                            value={data.password}
+                            placeholder="Password"
+                            autoComplete="current-password"
+                            required
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
+                            error={errors.password}
+                        />
 
                         <button
                             type="submit"

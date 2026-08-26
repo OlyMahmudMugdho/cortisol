@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import PostVoteBlock from './PostVoteBlock';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -32,71 +33,16 @@ interface PostItemProps {
 }
 
 export default function PostItem({ post, showGroup = true }: PostItemProps) {
-    const { auth } = usePage<any>().props;
-
-    const handleVote = (value: number) => {
-        if (!auth?.user) {
-            window.location.href = '/login';
-            return;
-        }
-        router.post(
-            `/posts/${post.id}/vote`,
-            { value },
-            { preserveScroll: true },
-        );
-    };
-
     return (
         <div className="flex overflow-hidden rounded-md border border-gray-200 bg-white shadow hover:border-gray-300">
             {/* Upvote sidebar */}
             <div className="flex w-10 flex-col items-center border-r border-gray-100 bg-gray-50 pt-2 pb-2">
-                <button
-                    onClick={() => handleVote(1)}
-                    className={`rounded p-1 hover:text-orange-500 ${post.user_vote?.value === 1 ? 'text-orange-500' : 'text-gray-400'}`}
-                >
-                    <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 15l7-7 7 7"
-                        />
-                    </svg>
-                </button>
-                <span
-                    className={`text-xs font-bold ${
-                        post.user_vote?.value === 1
-                            ? 'text-orange-500'
-                            : post.user_vote?.value === -1
-                              ? 'text-indigo-500'
-                              : 'text-gray-800'
-                    }`}
-                >
-                    {post.votes_sum_value || 0}
-                </span>
-                <button
-                    onClick={() => handleVote(-1)}
-                    className={`rounded p-1 hover:text-indigo-500 ${post.user_vote?.value === -1 ? 'text-indigo-500' : 'text-gray-400'}`}
-                >
-                    <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                        />
-                    </svg>
-                </button>
+                <PostVoteBlock
+                    postId={post.id}
+                    votesSum={post.votes_sum_value || 0}
+                    userVote={post.user_vote?.value || null}
+                    isVertical={true}
+                />
             </div>
 
             {/* Post content */}
