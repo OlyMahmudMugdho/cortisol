@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AppLayout from '../../layouts/AppLayout';
+import CommentItem, { Comment } from '../../components/CommentItem';
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -17,17 +18,6 @@ interface Group {
     code: string;
 }
 
-interface Comment {
-    id: number;
-    content: string;
-    created_at: string;
-    user: User;
-    votes_sum_value: number | null;
-    user_vote: {
-        value: number;
-    } | null;
-}
-
 interface Post {
     id: number;
     title: string;
@@ -36,11 +26,11 @@ interface Post {
     user: User;
     group: Group;
     comments_count: number;
+    comments?: Comment[];
     votes_sum_value: number | null;
     user_vote: {
         value: number;
     } | null;
-    comments: Comment[];
 }
 
 interface Props {
@@ -64,32 +54,20 @@ export default function ShowPost({ post }: Props) {
         );
     };
 
-    const handleCommentVote = (commentId: number, value: number) => {
-        if (!auth?.user) {
-            window.location.href = '/login';
-            return;
-        }
-        router.post(
-            `/comments/${commentId}/vote`,
-            { value },
-            { preserveScroll: true },
-        );
-    };
-
     const {
         data,
         setData,
-        post: submitPost,
+        post: submitCommentPost,
         processing,
-        reset,
         errors,
+        reset,
     } = useForm({
         content: '',
     });
 
     const submitComment = (e: React.FormEvent) => {
         e.preventDefault();
-        submitPost(`/posts/${post.id}/comments`, {
+        submitCommentPost(`/posts/${post.id}/comments`, {
             preserveScroll: true,
             onSuccess: () => reset('content'),
         });
@@ -138,7 +116,6 @@ export default function ShowPost({ post }: Props) {
                                         />
                                     </svg>
                                 </button>
-
                                 {isMenuOpen && (
                                     <>
                                         <div
@@ -199,11 +176,13 @@ export default function ShowPost({ post }: Props) {
                     <h1 className="mb-4 text-2xl font-bold text-gray-900">
                         {post.title}
                     </h1>
+
                     {post.content && (
                         <div className="mt-4 break-words whitespace-pre-wrap text-gray-800">
                             {post.content}
                         </div>
                     )}
+
                     <div className="mt-6 flex items-center space-x-4 text-sm font-bold text-gray-500">
                         <div className="flex items-center space-x-1 rounded-full bg-gray-100 px-2 py-1">
                             <button
@@ -333,97 +312,10 @@ export default function ShowPost({ post }: Props) {
                     <div className="space-y-6">
                         {post.comments && post.comments.length > 0 ? (
                             post.comments.map((comment) => (
-                                <div
+                                <CommentItem
                                     key={comment.id}
-                                    className="flex space-x-3"
-                                >
-                                    <div className="flex-shrink-0">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">
-                                            {comment.user.username
-                                                .charAt(0)
-                                                .toUpperCase()}
-                                        </div>
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="mb-1 flex items-center text-xs text-gray-500">
-                                            <Link
-                                                href={`/u/${comment.user.username}`}
-                                                className="mr-2 font-bold text-gray-900 hover:underline"
-                                            >
-                                                {comment.user.username}
-                                            </Link>
-                                            <span>
-                                                {dayjs(
-                                                    comment.created_at,
-                                                ).fromNow()}
-                                            </span>
-                                        </div>
-                                        <div className="text-sm break-words whitespace-pre-wrap text-gray-800">
-                                            {comment.content}
-                                        </div>
-                                        <div className="mt-2 flex items-center space-x-2 text-xs font-bold text-gray-500">
-                                            <button
-                                                onClick={() =>
-                                                    handleCommentVote(
-                                                        comment.id,
-                                                        1,
-                                                    )
-                                                }
-                                                className={`rounded p-1 hover:bg-gray-200 hover:text-orange-500 ${comment.user_vote?.value === 1 ? 'bg-gray-100 text-orange-500' : 'text-gray-400'}`}
-                                            >
-                                                <svg
-                                                    className="h-4 w-4"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M5 15l7-7 7 7"
-                                                    />
-                                                </svg>
-                                            </button>
-                                            <span
-                                                className={`${
-                                                    comment.user_vote?.value ===
-                                                    1
-                                                        ? 'text-orange-500'
-                                                        : comment.user_vote
-                                                                ?.value === -1
-                                                          ? 'text-indigo-500'
-                                                          : 'text-gray-900'
-                                                }`}
-                                            >
-                                                {comment.votes_sum_value || 0}
-                                            </span>
-                                            <button
-                                                onClick={() =>
-                                                    handleCommentVote(
-                                                        comment.id,
-                                                        -1,
-                                                    )
-                                                }
-                                                className={`rounded p-1 hover:bg-gray-200 hover:text-indigo-500 ${comment.user_vote?.value === -1 ? 'bg-gray-100 text-indigo-500' : 'text-gray-400'}`}
-                                            >
-                                                <svg
-                                                    className="h-4 w-4"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M19 9l-7 7-7-7"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                    comment={comment as any}
+                                />
                             ))
                         ) : (
                             <p className="py-4 text-center text-gray-500">
