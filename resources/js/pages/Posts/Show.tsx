@@ -73,6 +73,30 @@ export default function ShowPost({ post }: Props) {
         });
     };
 
+    const commentsTree = useMemo(() => {
+        if (!post.comments) return [];
+        const commentMap: Record<number, Comment> = {};
+        const roots: Comment[] = [];
+
+        // Initialize map
+        post.comments.forEach((c) => {
+            commentMap[c.id] = { ...c, replies: [] };
+        });
+
+        // Build tree
+        post.comments.forEach((c) => {
+            if (c.parent_id) {
+                if (commentMap[c.parent_id]) {
+                    commentMap[c.parent_id].replies!.push(commentMap[c.id]);
+                }
+            } else {
+                roots.push(commentMap[c.id]);
+            }
+        });
+
+        return roots;
+    }, [post.comments]);
+
     return (
         <AppLayout>
             <div className="rounded-md bg-white shadow">
@@ -311,7 +335,7 @@ export default function ShowPost({ post }: Props) {
 
                     <div className="space-y-6">
                         {commentsTree.length > 0 ? (
-                            post.comments.map((comment) => (
+                            commentsTree.map((comment) => (
                                 <CommentItem
                                     key={comment.id}
                                     comment={comment as any}
@@ -379,26 +403,3 @@ export default function ShowPost({ post }: Props) {
         </AppLayout>
     );
 }
-const commentsTree = useMemo(() => {
-    if (!post.comments) return [];
-    const commentMap: Record<number, Comment> = {};
-    const roots: Comment[] = [];
-
-    // Initialize map
-    post.comments.forEach((c) => {
-        commentMap[c.id] = { ...c, replies: [] };
-    });
-
-    // Build tree
-    post.comments.forEach((c) => {
-        if (c.parent_id) {
-            if (commentMap[c.parent_id]) {
-                commentMap[c.parent_id].replies!.push(commentMap[c.id]);
-            }
-        } else {
-            roots.push(commentMap[c.id]);
-        }
-    });
-
-    return roots;
-}, [post.comments]);
