@@ -16,14 +16,23 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string $code
  * @property int $group_type_id
+ * @property int|null $creator_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'code', 'group_type_id'])]
+#[Fillable(['name', 'code', 'group_type_id', 'creator_id'])]
 class Group extends Model
 {
     /** @use HasFactory<GroupFactory> */
     use HasFactory;
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
 
     /**
      * @return BelongsTo<GroupType, $this>

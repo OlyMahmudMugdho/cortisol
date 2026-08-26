@@ -30,7 +30,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'General Discussion',
             'code' => 'general',
             'group_type_id' => $type->id,
+            'creator_id' => $user->id,
         ]);
+
+        $group->users()->attach($user->id);
 
         Post::create([
             'title' => 'Welcome to Cortisol!',
