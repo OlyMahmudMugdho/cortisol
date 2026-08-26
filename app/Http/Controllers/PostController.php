@@ -51,4 +51,43 @@ class PostController extends Controller
             'post' => $post,
         ]);
     }
+
+    public function edit(Request $request, Post $post)
+    {
+        if ($request->user()->id !== $post->user_id) {
+            abort(403);
+        }
+
+        return Inertia::render('Posts/Edit', [
+            'post' => $post,
+        ]);
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        if ($request->user()->id !== $post->user_id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'content' => ['nullable', 'string'],
+        ]);
+
+        $post->update($validated);
+
+        return redirect()->route('posts.show', $post->id)
+            ->with('success', 'Post updated successfully.');
+    }
+
+    public function destroy(Request $request, Post $post)
+    {
+        if ($request->user()->id !== $post->user_id) {
+            abort(403);
+        }
+
+        $post->delete();
+
+        return redirect()->route('home')
+            ->with('success', 'Post deleted successfully.');
+    }
 }
