@@ -197,60 +197,56 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 <div className="flex-1">{children}</div>
                 {/* Sidebar (can be customized per page if needed, but we'll add a generic one here for now, or just let pages manage it) */}
                 <div className="hidden w-80 shrink-0 lg:block">
-                    <div className="sticky top-20 rounded-lg bg-white p-4 shadow">
-                        <h2 className="mb-3 text-sm font-bold tracking-wider text-gray-900 uppercase">
-                            About Cortisol
-                        </h2>
-                        <p className="mb-4 text-sm text-gray-600">
-                            The front page of your custom reddit clone. Share,
-                            vote, and discuss.
-                        </p>
-                        {user && (
-                            <div className="space-y-2">
-                                <Link
-                                    href="/posts/create"
-                                    className="block w-full rounded-full bg-orange-600 px-4 py-2 text-center font-bold text-white hover:bg-orange-700"
-                                >
-                                    Create Post
-                                </Link>
-                                <Link
-                                    href="/groups/create"
-                                    className="block w-full rounded-full border border-orange-600 px-4 py-2 text-center font-bold text-orange-600 hover:bg-orange-50"
-                                >
-                                    Create Community
-                                </Link>
+                    {user ? (
+                        <>
+                            <div className="sticky top-20 rounded-lg bg-white p-4 shadow">
+                                <div className="space-y-2">
+                                    <Link
+                                        href="/posts/create"
+                                        className="block w-full rounded-full bg-orange-600 px-4 py-2 text-center font-bold text-white hover:bg-orange-700"
+                                    >
+                                        Create Post
+                                    </Link>
+                                    <Link
+                                        href="/groups/create"
+                                        className="block w-full rounded-full border border-orange-600 px-4 py-2 text-center font-bold text-orange-600 hover:bg-orange-50"
+                                    >
+                                        Create Community
+                                    </Link>
+                                </div>
                             </div>
-                        )}
-                        {!user && (
+
+                            {user.groups && user.groups.length > 0 && (
+                                <div className="sticky top-[180px] mt-4 rounded-lg bg-white p-4 shadow">
+                                    <h2 className="mb-3 text-sm font-bold tracking-wider text-gray-900 uppercase">
+                                        Your Communities
+                                    </h2>
+                                    <ul className="space-y-2">
+                                        {user.groups.map((group) => (
+                                            <li key={group.id}>
+                                                <Link
+                                                    href={`/g/${group.code}`}
+                                                    className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-500"
+                                                >
+                                                    <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs">
+                                                        g/
+                                                    </span>
+                                                    {group.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="sticky top-20 rounded-lg bg-white p-4 shadow">
                             <Link
                                 href="/register"
                                 className="block w-full rounded-full bg-orange-600 px-4 py-2 text-center font-bold text-white hover:bg-orange-700"
                             >
                                 Join Cortisol
                             </Link>
-                        )}
-                    </div>
-
-                    {user && user.groups && user.groups.length > 0 && (
-                        <div className="sticky top-[300px] mt-4 rounded-lg bg-white p-4 shadow">
-                            <h2 className="mb-3 text-sm font-bold tracking-wider text-gray-900 uppercase">
-                                Your Communities
-                            </h2>
-                            <ul className="space-y-2">
-                                {user.groups.map((group) => (
-                                    <li key={group.id}>
-                                        <Link
-                                            href={`/g/${group.code}`}
-                                            className="flex items-center text-sm font-medium text-gray-700 hover:text-blue-500"
-                                        >
-                                            <span className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs">
-                                                g/
-                                            </span>
-                                            {group.name}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                     )}
                 </div>
