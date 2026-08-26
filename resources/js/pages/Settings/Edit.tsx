@@ -43,7 +43,7 @@ export default function EditSettings({ user }: Props) {
 
     return (
         <AppLayout>
-            <div className="mx-auto max-w-3xl space-y-6">
+            <div className="mx-auto max-w-3xl space-y-6 pb-12">
                 <h1 className="mb-6 border-b pb-4 text-2xl font-bold text-gray-900">
                     User Settings
                 </h1>
