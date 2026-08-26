@@ -194,7 +194,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
             {/* Page Content */}
             <main className="mx-auto flex max-w-7xl flex-col px-4 pt-4 pb-12 sm:px-6 lg:flex-row lg:space-x-6 lg:px-8">
-                <div className="w-full flex-1">{children}</div>
+                <div className="w-full min-w-0 flex-1">{children}</div>
                 {/* Sidebar (can be customized per page if needed, but we'll add a generic one here for now, or just let pages manage it) */}
                 <div className="hidden w-80 shrink-0 lg:block">
                     {user ? (
