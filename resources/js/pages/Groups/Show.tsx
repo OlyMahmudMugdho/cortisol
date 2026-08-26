@@ -62,7 +62,7 @@ export default function ShowGroup({ group, isJoined }: Props) {
             <div className="rounded-md bg-white p-6 text-center text-gray-500 shadow">
                 <p>Welcome to {group.name}! Post feed coming soon...</p>
                 <Link
-                    href="/posts/create"
+                    href={`/posts/create?group_id=${group.id}`}
                     className="mt-4 inline-block text-blue-500 hover:underline"
                 >
                     Create the first post
