@@ -49,7 +49,7 @@ export default function EditSettings({ user }: Props) {
                 </h1>
 
                 {/* Profile Information */}
-                <div className="rounded-md bg-white p-6 shadow">
+                <div className="rounded-md bg-white p-4 shadow sm:p-6">
                     <h2 className="mb-4 text-lg font-bold text-gray-900">
                         Profile Information
                     </h2>
@@ -132,7 +132,7 @@ export default function EditSettings({ user }: Props) {
                 </div>
 
                 {/* Password Update */}
-                <div className="rounded-md bg-white p-6 shadow">
+                <div className="rounded-md bg-white p-4 shadow sm:p-6">
                     <h2 className="mb-4 text-lg font-bold text-gray-900">
                         Update Password
                     </h2>

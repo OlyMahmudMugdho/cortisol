@@ -98,7 +98,7 @@ export default function ShowPost({ post }: Props) {
         <AppLayout>
             <div className="rounded-md bg-white shadow">
                 {/* Post Header */}
-                <div className="border-b border-gray-100 p-6">
+                <div className="border-b border-gray-100 p-4 sm:p-6">
                     <div className="mb-2 flex items-center text-xs text-gray-500">
                         <Link
                             href={`/g/${post.group.code}`}
@@ -240,7 +240,7 @@ export default function ShowPost({ post }: Props) {
                 </div>
 
                 {/* Comment Section */}
-                <div className="rounded-b-md bg-gray-50 p-6">
+                <div className="rounded-b-md bg-gray-50 p-4 sm:p-6">
                     {auth?.user ? (
                         <form onSubmit={submitComment} className="mb-8">
                             <p className="mb-2 text-sm text-gray-600">

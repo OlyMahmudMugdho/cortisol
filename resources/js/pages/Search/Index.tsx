@@ -66,7 +66,7 @@ export default function SearchIndex({ q, groups, users, posts }: Props) {
 
     return (
         <AppLayout>
-            <div className="rounded-md bg-white p-6 shadow">
+            <div className="rounded-md bg-white p-4 shadow sm:p-6">
                 <h1 className="mb-6 border-b pb-4 text-xl font-bold text-gray-900">
                     Search Results for "{q}"
                 </h1>

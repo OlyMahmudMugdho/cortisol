@@ -58,7 +58,7 @@ export default function ShowUser({ profileUser, posts }: Props) {
 
     return (
         <AppLayout>
-            <div className="mb-4 flex items-center space-x-4 rounded-md bg-white p-6 shadow">
+            <div className="mb-4 flex items-center space-x-4 rounded-md bg-white p-4 shadow sm:p-6">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 text-2xl font-bold text-gray-500">
                     {profileUser.username.charAt(0).toUpperCase()}
                 </div>
