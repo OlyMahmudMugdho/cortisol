@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '../../layouts/AppLayout';
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import dayjs from 'dayjs';
@@ -45,6 +45,7 @@ interface Props {
 
 export default function ShowPost({ post }: Props) {
     const { auth } = usePage<any>().props;
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const handleVote = (value: number) => {
         if (!auth?.user) {
@@ -199,15 +200,7 @@ export default function ShowPost({ post }: Props) {
                                     Edit
                                 </Link>
                                 <button
-                                    onClick={() => {
-                                        if (
-                                            confirm(
-                                                'Are you sure you want to delete this post?',
-                                            )
-                                        ) {
-                                            router.delete(`/posts/${post.id}`);
-                                        }
-                                    }}
+                                    onClick={() => setIsDeleteModalOpen(true)}
                                     className="flex items-center rounded p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
                                 >
                                     <svg
@@ -330,6 +323,56 @@ export default function ShowPost({ post }: Props) {
                     </div>
                 </div>
             </div>
+
+            {/* Delete Modal */}
+            {isDeleteModalOpen && (
+                <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto bg-black p-4">
+                    <div className="relative w-full max-w-md rounded-lg bg-white shadow">
+                        <div className="flex items-center justify-between rounded-t border-b p-4">
+                            <h3 className="text-lg font-bold text-gray-900">
+                                Delete post?
+                            </h3>
+                            <button
+                                onClick={() => setIsDeleteModalOpen(false)}
+                                className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
+                            >
+                                <svg
+                                    className="h-5 w-5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                        clipRule="evenodd"
+                                    ></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="p-6">
+                            <p className="text-sm text-gray-600">
+                                Once you delete this post, it can't be restored.
+                            </p>
+                        </div>
+                        <div className="flex items-center justify-end rounded-b border-t border-gray-200 p-4">
+                            <button
+                                onClick={() => setIsDeleteModalOpen(false)}
+                                className="mr-3 rounded-full border border-gray-300 bg-white px-5 py-2.5 text-sm font-bold text-gray-700 hover:bg-gray-50 focus:ring-4 focus:ring-gray-200 focus:outline-none"
+                            >
+                                Go Back
+                            </button>
+                            <button
+                                onClick={() => {
+                                    router.delete(`/posts/${post.id}`);
+                                }}
+                                className="rounded-full bg-red-600 px-5 py-2.5 text-center text-sm font-bold text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 focus:outline-none"
+                            >
+                                Yes, Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AppLayout>
     );
 }
